@@ -15,18 +15,19 @@ B1 = 1  # Constante B1 da função sigmoid
 menor_custo_total = math.inf  # Menor custo total para a empresa
 menor_C = None  # Menor valor a ser oferecido para os entregadores ocasionais
 
-for i in range(100000):
-    random.seed(random.randint(0, 100000))
-    C = random.uniform(0.0, F)  # Custo de entrega que a empresa pode oferecer para os entregadores ocasionais
+random.seed(5)
 
+for i in range(100000):
+    C = i / 10000
+    #random.uniform(0.0, F)  # Custo de entrega que a empresa pode oferecer para os entregadores ocasionais
+    #print(C)
     P = sigmoid(B0, B1, C)  # Probabilidade associada ao valor C escolhido aleatoriamente anteriormente
 
     K = 0  # Quantidade de entregadores ocasionais que aceitam fazer uma entrega
 
     for j in range(M):
-        random.seed(random.randint(0, 100000))
         p = random.uniform(0.0, 1.0)  # Gerando um número aleatório para cada entregador ocasional
-
+        #print(p)
         # O valor gerado (p) para o entregador ocasional for menor ou igual a P, isso quer dizer que ele vai aceitar
         # fazer a entrega
         if p <= P:
