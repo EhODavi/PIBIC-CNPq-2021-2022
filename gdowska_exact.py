@@ -133,8 +133,8 @@ def eval_archetti(C, c, q, p, r, Q, A):
     return expect
 
 
-def make_data(n):
-    """make_data: prepare all relevant data randomly:
+def make_data_random(n):
+    """make_data_random: prepare all relevant data randomly:
     compute matrix distance based on euclidean distance
     between n customers, m occasional drivers.
     Returns tuple (C, c, q, K, p, alpha, probmax, v0, Q), where:
@@ -170,26 +170,77 @@ def make_data(n):
 
     return C, c, q, p, r, Q
 
+def make_data_read(n):
+    """make_data_read: read all relevant data:
+    compute matrix distance based on euclidean distance
+    between n customers, m occasional drivers.
+    Returns tuple (C, c, q, K, p, alpha, probmax, v0, Q), where:
+        - C: list of customers [depot is 0]
+        - c[i,j]: cost of edge (i,j)
+        - q[i]: demand for customer i
+        - p[i]: probability of an outsource to i being accepted
+        - r[i]: cost for outsourcing delivery to i
+        - Q: vehicle's capacity
+      """
+    distance = lambda x1, y1, x2, y2: math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+    # CUSTOMERS
+    C = list(range(1,n+1))
+
+    x = dict()
+    y = dict()
+
+    for i in [0]+C:
+        xi = float(input(f"x{i} = "))
+        yi = float(input(f"y{i} = "))
+        x.update({i:xi})
+        y.update({i:yi})
+
+    c, q = {}, {}  # c[i,j] -> cost matrix, q[i] -> demand
+    p, r = {}, {}  # p[i], r[i] -> prob/cost for outsourcing to i
+    beta = {}      # beta[i,k] = 1 if i can be served by k
+    for i in [0]+C:
+        q[i] = int(input(f"Demanda do cliente {i} = "))
+        for j in [0]+C:
+            c[i,j] = distance(x[i],y[i],x[j],y[j])
+            c[j,i] = distance(x[i],y[i],x[j],y[j])
+
+    # COURIERS
+    for i in [0] + C:
+        p[i] = float(input(f"Probabilidade de uma entrega para o cliente {i} ser aceita = "))
+        r[i] = float(input(f"Custo de se entregar para o cliente {i} = "))
+
+    # VEHICLES
+    Q = 50  # vehicle's capacity
+
+    return C, c, q, p, r, Q
 
 
-if __name__ == "__main__":
+def main():
     import time
     import itertools
     import sys
 
-    # initialize the random generator
-    try:
-        r1 = int(sys.argv[1])
-    except:
-        r1 = int(time.time())
-    print("Random seeds: r1=%d" % (r1))
-    random.seed(r1)
+    opcao = input('Deseja ler uma instância (1/0)?\n')
 
-    try:
-	    n = int(sys.argv[2])
-    except:
-    	n = 15   # customers to serve
-    C, c, q, p, r, Q = make_data(n)
+    if opcao == "1":
+        n = int(input("Número de Clientes = "))
+        C, c, q, p, r, Q = make_data_read(n)
+    else:
+        # initialize the random generator
+        try:
+            r1 = int(sys.argv[1])
+        except:
+            r1 = int(time.time())
+        print("Random seeds: r1=%d" % (r1))
+        random.seed(r1)
+
+        try:
+            n = int(sys.argv[2])
+        except:
+            n = 5  # customers to serve
+
+        C, c, q, p, r, Q = make_data_random(n)
 
     # solution with no outsourcing
     amin = []
@@ -197,19 +248,22 @@ if __name__ == "__main__":
     print("initial -> {:.4g}".format(zmin))
 
     C = []
-    C.extend(range(1, n+1))
+    C.extend(range(1, n + 1))
     x = len(C)
     masks = [1 << i for i in range(x)]
     for i in range(1 << x):
-	    A = [ss for mask, ss in zip(masks, C) if i & mask]
-	    z = eval_archetti(C, c, q, p, r, Q, A)
-	    print("{:.4g} <- {}".format(z,A))
-	    if z<zmin:
-		    zmin = z
-		    amin = A
+        A = [ss for mask, ss in zip(masks, C) if i & mask]
+        z = eval_archetti(C, c, q, p, r, Q, A)
+        print("{:.4g} <- {}".format(z, A))
+        if z < zmin:
+            zmin = z
+            amin = A
     print("MIN")
-    print("{:.4g} <- {}".format(zmin,amin))
+    print("{:.4g} <- {}".format(zmin, amin))
     sys.stdout.flush()
+
+if __name__ == "__main__":
+    main()
 
 """
     A = set()
