@@ -168,7 +168,7 @@ def make_data_random(n):
     # VEHICLES
     Q = 50  # vehicle's capacity
 
-    return C, c, q, p, r, Q
+    return C, c, q, p, r, Q, x, y
 
 def make_data_read(n):
     """make_data_read: read all relevant data:
@@ -213,7 +213,7 @@ def make_data_read(n):
     # VEHICLES
     Q = 50  # vehicle's capacity
 
-    return C, c, q, p, r, Q
+    return C, c, q, p, r, Q, x, y
 
 
 def main():
@@ -225,7 +225,7 @@ def main():
 
     if opcao == "1":
         n = int(input("Número de Clientes = "))
-        C, c, q, p, r, Q = make_data_read(n)
+        C, c, q, p, r, Q, x, y = make_data_read(n)
     else:
         # initialize the random generator
         try:
@@ -240,7 +240,7 @@ def main():
         except:
             n = 5  # customers to serve
 
-        C, c, q, p, r, Q = make_data_random(n)
+        C, c, q, p, r, Q, x, y = make_data_random(n)
 
     # solution with no outsourcing
     amin = []
@@ -249,9 +249,9 @@ def main():
 
     C = []
     C.extend(range(1, n + 1))
-    x = len(C)
-    masks = [1 << i for i in range(x)]
-    for i in range(1 << x):
+    w = len(C)
+    masks = [1 << i for i in range(w)]
+    for i in range(1 << w):
         A = [ss for mask, ss in zip(masks, C) if i & mask]
         z = eval_archetti(C, c, q, p, r, Q, A)
         print("{:.4g} <- {}".format(z, A))
@@ -261,6 +261,8 @@ def main():
     print("MIN")
     print("{:.4g} <- {}".format(zmin, amin))
     sys.stdout.flush()
+
+    return n, x, y, amin
 
 if __name__ == "__main__":
     main()
