@@ -6,9 +6,11 @@ n, x, y, amin = gdowska_exact.main()
 
 G = nx.Graph()
 
-for i in range(n + 1):
+G.add_node(0, color='green', pos=(x[0], y[0]))
+
+for i in range(1, n + 1):
     if i in amin:
-        G.add_node(i, color='yellow', pos=(x[i], y[i]))
+        G.add_node(i, color='red', pos=(x[i], y[i]))
     else:
         G.add_node(i, color='blue', pos=(x[i], y[i]))
 

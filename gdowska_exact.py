@@ -238,7 +238,7 @@ def main():
         try:
             n = int(sys.argv[2])
         except:
-            n = 5  # customers to serve
+            n = 10  # customers to serve
 
         C, c, q, p, r, Q, x, y = make_data_random(n)
 
