@@ -2,9 +2,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import gdowska_exact
 
-n, x, y, amin = gdowska_exact.main()
+n, x, y, amin, modelAll, modelA = gdowska_exact.main()
 
-G = nx.Graph()
+G = nx.DiGraph()
 
 G.add_node(0, color='green', pos=(x[0], y[0]))
 
@@ -14,9 +14,38 @@ for i in range(1, n + 1):
     else:
         G.add_node(i, color='blue', pos=(x[i], y[i]))
 
+
+modelAll.optimize()
+modelA.optimize()
+
+w1, x1, y1, z1 = modelAll.__data
+w2, x2, y2, z2 = modelA.__data
+
+for (i,j) in x1:
+    if x1[i,j].X > .5:
+        G.add_edge(i, j, color='black', weight=1)
+
+for (i,j) in x2:
+    if x2[i,j].X > .5:
+        G.add_edge(i, j, color='red', weight=1)
+
+
+
+# x = {}  # x[i,j] = 1 if regular vehicle traverses ij
+# y = {}  # y[i,j] load a regular vehicle carries when traversing ij
+# print("x=", [(i,j) for (i,j) in x if x[i,j].X > .5])
+# print("y=")
+# for (i,j) in y:
+#     if y[i,j].X > 0:
+#         print("y[%s,%s] = %g" % (i,j,y[i,j].X))
+# for i,c in enumerate(cycles([0]+C,[(i,j) for (i,j) in x if x[i,j].X > .5])):
+#     print("\t{}\t{}".format(i,c))
+
+edge_colors = nx.get_edge_attributes(G, 'color').values()
+weights = nx.get_edge_attributes(G, 'weight').values()
 colors = [node[1]['color'] for node in G.nodes(data=True)]
 pos = nx.get_node_attributes(G, 'pos')
 
-nx.draw(G, pos=pos, node_color=colors, with_labels=True, font_color='black')
+nx.draw(G, pos=pos, edge_color=edge_colors, node_color=colors, with_labels=True, font_color='black', width=list(weights))
 
 plt.show()
