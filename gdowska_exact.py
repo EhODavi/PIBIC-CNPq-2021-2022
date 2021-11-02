@@ -2,9 +2,6 @@ import random
 import math
 from gurobipy import *
 
-# Duas rotas: uma rota com todos os clientes e uma rota com os clientes que certamente
-# serão servidos pelos veículos (ou seja, todos os clientes exceto os oferecidos aos entregadores)
-# desenhar as duas rotas juntas, de cores diferentes, sobrepostas, para vermos as diferenças entre elas
 
 def archetti(C, c, q, r, Q, fix):
     """modified archetti's model to consider that demand can
@@ -267,11 +264,9 @@ def main():
 
     conjunto = []
     fix = {i: (1 if i in conjunto else 0) for i in C}
-
     modelAll = archetti(C, c, q, r, Q, fix)
 
     fix = {i: (1 if i in amin else 0) for i in C}
-
     modelA = archetti(C, c, q, r, Q, fix)
 
     return n, x, y, amin, modelAll, modelA

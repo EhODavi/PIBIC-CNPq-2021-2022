@@ -21,25 +21,13 @@ modelA.optimize()
 w1, x1, y1, z1 = modelAll.__data
 w2, x2, y2, z2 = modelA.__data
 
-for (i,j) in x1:
-    if x1[i,j].X > .5:
+for (i, j) in x1:
+    if x1[i, j].X > .5:
         G.add_edge(i, j, color='black', weight=1)
 
-for (i,j) in x2:
-    if x2[i,j].X > .5:
+for (i, j) in x2:
+    if x2[i, j].X > .5:
         G.add_edge(i, j, color='red', weight=1)
-
-
-
-# x = {}  # x[i,j] = 1 if regular vehicle traverses ij
-# y = {}  # y[i,j] load a regular vehicle carries when traversing ij
-# print("x=", [(i,j) for (i,j) in x if x[i,j].X > .5])
-# print("y=")
-# for (i,j) in y:
-#     if y[i,j].X > 0:
-#         print("y[%s,%s] = %g" % (i,j,y[i,j].X))
-# for i,c in enumerate(cycles([0]+C,[(i,j) for (i,j) in x if x[i,j].X > .5])):
-#     print("\t{}\t{}".format(i,c))
 
 edge_colors = nx.get_edge_attributes(G, 'color').values()
 weights = nx.get_edge_attributes(G, 'weight').values()
