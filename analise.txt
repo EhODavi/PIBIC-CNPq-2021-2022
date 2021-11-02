@@ -1,0 +1,5 @@
+# Posições dos vértices (clientes)
+x = {0: 0, 1: 1763, 2: 677, 3: 213, 4: 30, 5: 1364, 6: 1000, 7: 1256, 8: 2244, 9: 1000, 10: 2300}
+y = {0: 0, 1: 392, 2: 1859, 3: 1510, 4: 3200, 5: 561, 6: 150, 7: 3105, 8: 3163, 9: 1000, 10: 1500}
+
+Pelo que percebi o que mais influencia é o valor que será oferecido para o entregador ocasional (a probabilidade não influencia tanto)
