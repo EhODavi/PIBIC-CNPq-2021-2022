@@ -187,30 +187,28 @@ def make_data_read(n):
     # CUSTOMERS
     C = list(range(1,n+1))
 
-    x = {0: 0, 1: 17.63, 2: 6.77, 3: 2.13, 4: 0.30, 5: 13.64, 6: 10.00, 7: 12.56, 8: 22.44, 9: 10.00, 10: 23.00}
-    y = {0: 0, 1: 3.92, 2: 18.59, 3: 15.10, 4: 32.00, 5: 5.61, 6: 1.50, 7: 31.05, 8: 31.63, 9: 10.00, 10: 15.00}
-    #x = dict()
-    #y = dict()
+    x = dict()
+    y = dict()
 
-    #for i in [0]+C:
-    #    xi = float(input(f"x{i} = "))
-    #    yi = float(input(f"y{i} = "))
-    #    x.update({i:xi})
-    #    y.update({i:yi})
+    for i in [0]+C:
+        xi = float(input(f"x{i} = "))
+        yi = float(input(f"y{i} = "))
+        x.update({i:xi})
+        y.update({i:yi})
 
-    c, q = {}, {0:1000, 1:10, 2:10, 3:10, 4:10, 5:10, 6:10, 7:10, 8:10, 9:10, 10:11}  # c[i,j] -> cost matrix, q[i] -> demand
-    p, r = {0:0.5, 1:0.0001, 2:0.5, 3:0.5, 4:0.5, 5:0.5, 6:0.5, 7:0.5, 8:0.5, 9:5, 10:5}, {0:0, 1:24.35, 2:200, 3:300, 4:40, 5:500, 6:60, 7:700, 8:80, 9:90, 10:1000}  # p[i], r[i] -> prob/cost for outsourcing to i
+    c, q = {}, {}  # c[i,j] -> cost matrix, q[i] -> demand
+    p, r = {}, {}  # p[i], r[i] -> prob/cost for outsourcing to i
     beta = {}      # beta[i,k] = 1 if i can be served by k
     for i in [0]+C:
-        #q[i] = int(input(f"Demanda do cliente {i} = "))
+        q[i] = int(input(f"Demanda do cliente {i} = "))
         for j in [0]+C:
             c[i,j] = distance(x[i],y[i],x[j],y[j])
             c[j,i] = distance(x[i],y[i],x[j],y[j])
 
     # COURIERS
-    #for i in [0] + C:
-    #    p[i] = float(input(f"Probabilidade de uma entrega para o cliente {i} ser aceita = "))
-    #    r[i] = float(input(f"Custo de se entregar para o cliente {i} = "))
+    for i in [0] + C:
+        p[i] = float(input(f"Probabilidade de uma entrega para o cliente {i} ser aceita = "))
+        r[i] = float(input(f"Custo de se entregar para o cliente {i} = "))
 
     # VEHICLES
     Q = 50  # vehicle's capacity
@@ -226,8 +224,7 @@ def main():
     opcao = input('Deseja ler uma instância (1/0)?\n')
 
     if opcao == "1":
-        #n = int(input("Número de Clientes = "))
-        n = 10
+        n = int(input("Número de Clientes = "))
         C, c, q, p, r, Q, x, y = make_data_read(n)
     else:
         # initialize the random generator
