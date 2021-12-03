@@ -1,6 +1,68 @@
 import random
-import math
 from gurobipy import *
+from collections import namedtuple
+from random import choice
+from monte_carlo_tree_search import MCTS, Node
+
+_Gdowska = namedtuple("Gdowska", "free pf oc winner terminal C c q p r Q")
+
+
+class LastMile(_Gdowska, Node):
+    def find_children(self):
+        if self.terminal:  # If the game is finished then no moves can be made
+            return set()
+        # Otherwise, you can make a move in oc or in pf
+        return {self.make_move(-1, True), self.make_move(-1, False)}
+
+    def find_random_child(self):
+        if self.terminal:
+            return None  # If the game is finished then no moves can be made
+        x = choice([True,False])
+        return self.make_move(-1, x)
+
+    def reward(self):
+        if not self.terminal:
+            raise RuntimeError(f"reward called on nonterminal board {self}")
+        if self.winner is None:
+            return 0.5  # Board is a tie
+        elif self.winner == False:
+            return 0
+        elif self.winner == True:
+            return 1
+        # The winner is neither True, False, nor None
+        raise RuntimeError(f"board has unknown winner type {self.winner}")
+
+    def is_terminal(self):
+        return self.terminal
+
+    def make_move(self, index, is_oc):
+        free = list(self.free)
+        cust = free.pop(index)
+        free = tuple(free)
+        if is_oc:
+            oc = frozenset(self.oc | {cust})
+            pf = self.pf
+        else:
+            oc = self.oc
+            pf = frozenset(self.pf | {cust})
+        is_terminal = (len(free) == 0)
+        if is_terminal:
+            winner = _find_winner(free, pf, oc, self.C, self.c, self.q, self.p, self.r, self.Q)
+        else:
+            winner = -111   # should raise an error if used
+        return LastMile(free=free, pf=pf, oc=oc,
+                        winner=winner, terminal=is_terminal, C=self.C, c=self.c, q=self.q, p=self.p, r=self.r, Q=self.Q)
+
+    def to_pretty_string(self):
+        return f"free={self.free}, pf={self.pf}, oc={self.oc}"
+
+    def __hash__(self):
+        "Nodes must be hashable"
+        return hash(self.free) + hash(self.pf) + hash(self.oc) + hash(self.winner) + hash(self.is_terminal)
+
+    def __eq__(node1, node2):
+        "Nodes must be comparable"
+        return node1.__hash__ == node2.__hash__
 
 
 def archetti(C, c, q, r, Q, fix):
@@ -71,6 +133,8 @@ def archetti(C, c, q, r, Q, fix):
 
 # globals
 MIPCACHE = {}
+
+
 def cache_archetti(C, c, q, r, Q, A):
     """
     check if current archetti model has already been solved; if not, solve and cache it
@@ -102,6 +166,8 @@ def cache_archetti(C, c, q, r, Q, A):
 
 # globals
 PATCACHE = {}
+
+
 def eval_archetti(C, c, q, p, r, Q, A):
     """
     evaluate archetti model with probability of couriers not accepting a delivery
@@ -169,6 +235,7 @@ def make_data_random(n):
     Q = 50  # vehicle's capacity
 
     return C, c, q, p, r, Q, x, y
+
 
 def make_data_read(n):
     """make_data_read: read all relevant data:
@@ -238,7 +305,7 @@ def main():
         try:
             n = int(sys.argv[2])
         except:
-            n = 4  # customers to serve
+            n = 5  # customers to serve
 
         C, c, q, p, r, Q, x, y = make_data_random(n)
 
@@ -247,6 +314,28 @@ def main():
     zmin = cache_archetti(C, c, q, r, Q, [])
     print("initial -> {:.4g}".format(zmin))
 
+    #opcao = input('\nDeseja usar o Monte Carlo Tree Search (1/0)?\n')
+
+    #if opcao == "1":
+    tree = MCTS()
+    board = new_lastmile(C, c, q, p, r, Q)
+
+    for _ in range(1000):
+        tree.do_rollout(board)
+
+    while not board.is_terminal():
+        board = tree.choose(board)
+
+    amin = []
+
+    for val in board.oc:
+        amin.append(val)
+
+    zmin = eval_archetti(C, c, q, p, r, Q, amin)
+
+    print("MIN")
+    print("{:.4g} <- {}".format(zmin, amin))
+    #else:
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -254,7 +343,7 @@ def main():
     for i in range(1 << w):
         A = [ss for mask, ss in zip(masks, C) if i & mask]
         z = eval_archetti(C, c, q, p, r, Q, A)
-        print("{:.4g} <- {}".format(z, A))
+        #print("{:.4g} <- {}".format(z, A))
         if z < zmin:
             zmin = z
             amin = A
@@ -270,6 +359,42 @@ def main():
     modelA = archetti(C, c, q, r, Q, fix)
 
     return n, x, y, amin, modelAll, modelA
+
+
+def _find_winner(free, pf, oc, C, c, q, p, r, Q):
+    "Returns None if no winner, True if X wins, False if O wins"
+
+    if len(free) > 0:
+        raise RuntimeError(f"find winner call called on nonterminal board {free, pf, oc}")
+
+    if not oc:
+        return None
+
+    conjunto_sem_ocasionais = []
+    z1 = cache_archetti(C, c, q, r, Q, conjunto_sem_ocasionais)
+
+    conjunto_com_ocasionais = []
+
+    for val in oc:
+        conjunto_com_ocasionais.append(val)
+
+    z2 = eval_archetti(C, c, q, p, r, Q, conjunto_com_ocasionais)
+
+    if z2 < z1:
+        return True
+    elif z2 > z1:
+        return False
+    else:
+        return None
+
+
+def new_lastmile(C, c, q, p, r, Q):
+    free = tuple(C)   # yet to fix
+    pf = frozenset()  # professional fleet's vertices
+    oc = frozenset()  # outsourced vertices
+
+    return LastMile(free=free, pf=pf, oc=oc, winner=None, terminal=False, C=C, c=c, q=q, p=p, r=r, Q=Q)
+
 
 if __name__ == "__main__":
     main()
