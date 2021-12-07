@@ -4,7 +4,15 @@ from collections import namedtuple
 from random import choice
 from monte_carlo_tree_search import MCTS, Node
 
-_Gdowska = namedtuple("Gdowska", "free pf oc winner terminal C c q p r Q")
+_Gdowska = namedtuple("Gdowska", "free pf oc winner terminal")
+
+tsp_obj = None
+C_global = None
+c_global = None
+q_global = None
+p_global = None
+r_global = None
+Q_global = None
 
 
 class LastMile(_Gdowska, Node):
@@ -47,22 +55,14 @@ class LastMile(_Gdowska, Node):
             pf = frozenset(self.pf | {cust})
         is_terminal = (len(free) == 0)
         if is_terminal:
-            winner = _find_winner(free, pf, oc, self.C, self.c, self.q, self.p, self.r, self.Q)
+            winner = _find_winner(free, pf, oc)
         else:
             winner = -111   # should raise an error if used
         return LastMile(free=free, pf=pf, oc=oc,
-                        winner=winner, terminal=is_terminal, C=self.C, c=self.c, q=self.q, p=self.p, r=self.r, Q=self.Q)
+                        winner=winner, terminal=is_terminal)
 
     def to_pretty_string(self):
         return f"free={self.free}, pf={self.pf}, oc={self.oc}"
-
-    def __hash__(self):
-        "Nodes must be hashable"
-        return hash(self.free) + hash(self.pf) + hash(self.oc) + hash(self.winner) + hash(self.is_terminal)
-
-    def __eq__(node1, node2):
-        "Nodes must be comparable"
-        return node1.__hash__ == node2.__hash__
 
 
 def archetti(C, c, q, r, Q, fix):
@@ -288,6 +288,8 @@ def main():
     import itertools
     import sys
 
+    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
+
     opcao = input('Deseja ler uma instância (1/0)?\n')
 
     if opcao == "1":
@@ -309,16 +311,20 @@ def main():
 
         C, c, q, p, r, Q, x, y = make_data_random(n)
 
+    C_global = C
+    c_global = c
+    q_global = q
+    p_global = p
+    r_global = r
+    Q_global = Q
+
     # solution with no outsourcing
-    amin = []
-    zmin = cache_archetti(C, c, q, r, Q, [])
-    print("initial -> {:.4g}".format(zmin))
+    tsp_obj = cache_archetti(C, c, q, r, Q, [])
+    zmin = tsp_obj
+    print("initial -> {:.4g}".format(tsp_obj))
 
-    #opcao = input('\nDeseja usar o Monte Carlo Tree Search (1/0)?\n')
-
-    #if opcao == "1":
     tree = MCTS()
-    board = new_lastmile(C, c, q, p, r, Q)
+    board = new_lastmile(C)
 
     for _ in range(1000):
         tree.do_rollout(board)
@@ -326,16 +332,16 @@ def main():
     while not board.is_terminal():
         board = tree.choose(board)
 
-    amin = []
+    amontecarlo = []
 
     for val in board.oc:
-        amin.append(val)
+        amontecarlo.append(val)
 
-    zmin = eval_archetti(C, c, q, p, r, Q, amin)
+    zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
 
-    print("MIN")
-    print("{:.4g} <- {}".format(zmin, amin))
-    #else:
+    print("MIN - MONTE CARLO")
+    print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
+
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -347,7 +353,7 @@ def main():
         if z < zmin:
             zmin = z
             amin = A
-    print("MIN")
+    print("MIN - EXAUSTIVO")
     print("{:.4g} <- {}".format(zmin, amin))
     sys.stdout.flush()
 
@@ -361,8 +367,10 @@ def main():
     return n, x, y, amin, modelAll, modelA
 
 
-def _find_winner(free, pf, oc, C, c, q, p, r, Q):
+def _find_winner(free, pf, oc):
     "Returns None if no winner, True if X wins, False if O wins"
+
+    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
 
     if len(free) > 0:
         raise RuntimeError(f"find winner call called on nonterminal board {free, pf, oc}")
@@ -370,30 +378,27 @@ def _find_winner(free, pf, oc, C, c, q, p, r, Q):
     if not oc:
         return None
 
-    conjunto_sem_ocasionais = []
-    z1 = cache_archetti(C, c, q, r, Q, conjunto_sem_ocasionais)
-
     conjunto_com_ocasionais = []
 
     for val in oc:
         conjunto_com_ocasionais.append(val)
 
-    z2 = eval_archetti(C, c, q, p, r, Q, conjunto_com_ocasionais)
+    z = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, conjunto_com_ocasionais)
 
-    if z2 < z1:
+    if z < tsp_obj:
         return True
-    elif z2 > z1:
+    elif z > tsp_obj:
         return False
     else:
         return None
 
 
-def new_lastmile(C, c, q, p, r, Q):
+def new_lastmile(C):
     free = tuple(C)   # yet to fix
     pf = frozenset()  # professional fleet's vertices
     oc = frozenset()  # outsourced vertices
 
-    return LastMile(free=free, pf=pf, oc=oc, winner=None, terminal=False, C=C, c=c, q=q, p=p, r=r, Q=Q)
+    return LastMile(free=free, pf=pf, oc=oc, winner=None, terminal=False)
 
 
 if __name__ == "__main__":
