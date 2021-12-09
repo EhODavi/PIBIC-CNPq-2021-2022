@@ -1,6 +1,6 @@
 import random
 from gurobipy import *
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 from random import choice
 from monte_carlo_tree_search import MCTS, Node
 
@@ -307,7 +307,7 @@ def main():
         try:
             n = int(sys.argv[2])
         except:
-            n = 5  # customers to serve
+            n = 8  # customers to serve
 
         C, c, q, p, r, Q, x, y = make_data_random(n)
 
@@ -321,25 +321,34 @@ def main():
     # solution with no outsourcing
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
     zmin = tsp_obj
-    print("initial -> {:.4g}".format(tsp_obj))
+    print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
     tree = MCTS()
     board = new_lastmile(C)
 
-    for _ in range(1000):
+    for _ in range(100):
         tree.do_rollout(board)
 
-    while not board.is_terminal():
-        board = tree.choose(board)
+    global OC_CACHE
 
     amontecarlo = []
+    zmontecarlo = tsp_obj
 
-    for val in board.oc:
-        amontecarlo.append(val)
+    for key, value in OC_CACHE.items():
+        valor_medio = sum(value) / len(value)
 
+        if valor_medio < zmontecarlo:
+            amontecarlo = []
+
+            for val in key:
+                amontecarlo.append(val)
+
+            zmontecarlo = valor_medio
+
+    amontecarlo.sort()
     zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
 
-    print("MIN - MONTE CARLO")
+    print("MIN - MONTE CARLO - OTIMIZADO")
     print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
 
     C = []
@@ -367,6 +376,9 @@ def main():
     return n, x, y, amin, modelAll, modelA
 
 
+OC_CACHE = defaultdict(list)
+
+
 def _find_winner(free, pf, oc):
     "Returns None if no winner, True if X wins, False if O wins"
 
@@ -380,10 +392,12 @@ def _find_winner(free, pf, oc):
 
     conjunto_com_ocasionais = []
 
-    for val in oc:
-        conjunto_com_ocasionais.append(val)
+    for i in oc:
+        if random.random() <= p_global[i]:  # oc accepted
+            conjunto_com_ocasionais.append(i)
 
-    z = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, conjunto_com_ocasionais)
+    z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+    OC_CACHE[oc].append(z)
 
     if z < tsp_obj:
         return True
