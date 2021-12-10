@@ -221,7 +221,8 @@ def make_data_random(n):
     p, r = {}, {}  # p[i], r[i] -> prob/cost for outsourcing to i
     beta = {}      # beta[i,k] = 1 if i can be served by k
     for i in [0]+C:
-        q[i] = random.randint(10,20)  # demand for customer i
+        #q[i] = random.randint(10,20)  # demand for customer i
+        q[i] = 1
         for j in [0]+C:
             c[i,j] = distance(x[i],y[i],x[j],y[j])
             c[j,i] = distance(x[i],y[i],x[j],y[j])
@@ -229,10 +230,11 @@ def make_data_random(n):
     # COURIERS
     for i in [0] + C:
         p[i] = random.random()  # probability of an outsource to i being accepted
-        r[i] = random.random()  # cost for outsourcing delivery to i
+        r[i] = random.random() / 5  # cost for outsourcing delivery to i
 
     # VEHICLES
-    Q = 50  # vehicle's capacity
+    #Q = 50  # vehicle's capacity
+    Q = len(C)  # vehicle's capacity
 
     return C, c, q, p, r, Q, x, y
 
@@ -307,7 +309,7 @@ def main():
         try:
             n = int(sys.argv[2])
         except:
-            n = 8  # customers to serve
+            n = 12  # customers to serve
 
         C, c, q, p, r, Q, x, y = make_data_random(n)
 
@@ -329,12 +331,13 @@ def main():
     for _ in range(100):
         tree.do_rollout(board)
 
-    global OC_CACHE
+    #global OC_CACHE
+    global PATCACHE
 
     amontecarlo = []
     zmontecarlo = tsp_obj
 
-    for key, value in OC_CACHE.items():
+    """for key, value in OC_CACHE.items():
         valor_medio = sum(value) / len(value)
 
         if valor_medio < zmontecarlo:
@@ -343,13 +346,23 @@ def main():
             for val in key:
                 amontecarlo.append(val)
 
-            zmontecarlo = valor_medio
+            zmontecarlo = valor_medio"""
+
+    for key, value in PATCACHE.items():
+        if value < zmontecarlo:
+            amontecarlo = []
+
+            for val in key:
+                amontecarlo.append(val)
+
+            zmontecarlo = value
 
     amontecarlo.sort()
-    zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
+    #zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
 
     print("MIN - MONTE CARLO - OTIMIZADO")
     print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
+
 
     C = []
     C.extend(range(1, n + 1))
@@ -390,14 +403,21 @@ def _find_winner(free, pf, oc):
     if not oc:
         return None
 
-    conjunto_com_ocasionais = []
+    """conjunto_com_ocasionais = []
 
     for i in oc:
         if random.random() <= p_global[i]:  # oc accepted
-            conjunto_com_ocasionais.append(i)
+            conjunto_com_ocasionais.append(i)"""
 
-    z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
-    OC_CACHE[oc].append(z)
+    conjunto_com_ocasionais = []
+
+    for val in oc:
+        conjunto_com_ocasionais.append(val)
+
+    z = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, conjunto_com_ocasionais)
+    #OC_CACHE[oc].append(z)
+
+    print(f"oc={oc}, z = {z}")
 
     if z < tsp_obj:
         return True
