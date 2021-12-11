@@ -211,12 +211,15 @@ def make_data_random(n):
         - r[i]: cost for outsourcing delivery to i
         - Q: vehicle's capacity
       """
-    distance = lambda x1, y1, x2, y2: math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    #distance = lambda x1, y1, x2, y2: math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    distance = lambda x1, y1, x2, y2: int(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
 
     # CUSTOMERS
     C = list(range(1,n+1))
-    x = {i:random.random() for i in [0]+C}
-    y = {i:random.random() for i in [0]+C}
+    #x = {i: random.random() for i in [0] + C}
+    #y = {i: random.random() for i in [0] + C}
+    x = {i:random.randint(0, 100) for i in [0]+C}
+    y = {i:random.randint(0, 100) for i in [0]+C}
     c, q = {}, {}  # c[i,j] -> cost matrix, q[i] -> demand
     p, r = {}, {}  # p[i], r[i] -> prob/cost for outsourcing to i
     beta = {}      # beta[i,k] = 1 if i can be served by k
@@ -230,7 +233,7 @@ def make_data_random(n):
     # COURIERS
     for i in [0] + C:
         p[i] = random.random()  # probability of an outsource to i being accepted
-        r[i] = random.random() / 5  # cost for outsourcing delivery to i
+        r[i] = random.randint(5, 15) # cost for outsourcing delivery to i
 
     # VEHICLES
     #Q = 50  # vehicle's capacity
@@ -298,7 +301,7 @@ def main():
         n = int(input("Número de Clientes = "))
         C, c, q, p, r, Q, x, y = make_data_read(n)
     else:
-        # initialize the random generator
+        """# initialize the random generator
         try:
             r1 = int(sys.argv[1])
         except:
@@ -309,9 +312,56 @@ def main():
         try:
             n = int(sys.argv[2])
         except:
-            n = 12  # customers to serve
+            n = 14  # customers to serve
 
-        C, c, q, p, r, Q, x, y = make_data_random(n)
+        C, c, q, p, r, Q, x, y = make_data_random(n)"""
+
+        """n = 12
+        C = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        x = {0: 3, 1: 23, 2: 42, 3: 34, 4: 17, 5: 91, 6: 8, 7: 83, 8: 25, 9: 79, 10: 69, 11: 39, 12: 83}
+        y = {0: 15, 1: 78, 2: 53, 3: 8, 4: 47, 5: 78, 6: 12, 7: 53, 8: 82, 9: 58, 10: 35, 11: 72, 12: 10}
+        q = {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1}
+        p = {0: 0.26266369929717515, 1: 0.9105203232699572, 2: 0.5761007748204056, 3: 0.9693661729369689,
+             4: 0.04330927647637206, 5: 0.4527361806679503, 6: 0.2997500515945183, 7: 0.7681239442857066,
+             8: 0.7287134404031639, 9: 0.5117792891431739, 10: 0.97705279241079, 11: 0.20444750927283328,
+             12: 0.08331003390462965}
+        r = {0: 6, 1: 3, 2: 10, 3: 3, 4: 9, 5: 2, 6: 9, 7: 7, 8: 7, 9: 6, 10: 5, 11: 6, 12: 2}
+        Q = 12"""
+
+        n = 13
+        C = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+        x = {0: 32, 1: 80, 2: 10, 3: 86, 4: 5, 5: 32, 6: 39, 7: 25, 8: 68, 9: 65, 10: 77, 11: 99, 12: 74, 13: 87}
+        y = {0: 6, 1: 77, 2: 4, 3: 77, 4: 52, 5: 94, 6: 49, 7: 3, 8: 48, 9: 80, 10: 14, 11: 2, 12: 13, 13: 70}
+        q = {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1}
+        p = {0: 0.020669624592521307, 1: 0.2990840318396233, 2: 0.021501051369915092, 3: 0.4640928902089929,
+             4: 0.7862898589578172, 5: 0.26934051004895454, 6: 0.8982378243987975, 7: 0.704443064847012,
+             8: 0.8732709690654726, 9: 0.0654237246494167, 10: 0.4010964490810075, 11: 0.07989146742844044,
+             12: 0.559246320424422, 13: 0.3826072495437086}
+        r = {0: 14, 1: 10, 2: 11, 3: 11, 4: 10, 5: 13, 6: 14, 7: 12, 8: 10, 9: 15, 10: 15, 11: 11, 12: 10, 13: 15}
+        Q = 13
+
+        """
+        n = 14
+        C = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+        x = {0: 57, 1: 60, 2: 91, 3: 77, 4: 52, 5: 50, 6: 99, 7: 1, 8: 12, 9: 94, 10: 44, 11: 23, 12: 27, 13: 33,
+             14: 85}
+        y = {0: 3, 1: 52, 2: 13, 3: 56, 4: 6, 5: 8, 6: 38, 7: 81, 8: 31, 9: 45, 10: 16, 11: 78, 12: 100, 13: 61, 14: 28}
+        q = {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1}
+        p = {0: 0.3651823392606387, 1: 0.4295896155160178, 2: 0.818411756528453, 3: 0.1948885488542671,
+             4: 0.6277083324079809, 5: 0.27518367917667363, 6: 0.3048153363238888, 7: 0.8066454911376206,
+             8: 0.5942252122559062, 9: 0.13593155714825245, 10: 0.6079522100064465, 11: 0.5371995793533364,
+             12: 0.9954007884255917, 13: 0.6472665214458186, 14: 0.3190960306606727}
+        r = {0: 5, 1: 5, 2: 5, 3: 13, 4: 15, 5: 6, 6: 13, 7: 7, 8: 15, 9: 14, 10: 5, 11: 10, 12: 11, 13: 6, 14: 5}
+        Q = 14"""
+
+        distance = lambda x1, y1, x2, y2: int(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
+
+        c = {}
+
+        for i in [0] + C:
+            for j in [0] + C:
+                c[i, j] = distance(x[i], y[i], x[j], y[j])
+                c[j, i] = distance(x[i], y[i], x[j], y[j])
 
     C_global = C
     c_global = c
@@ -328,16 +378,16 @@ def main():
     tree = MCTS()
     board = new_lastmile(C)
 
-    for _ in range(100):
+    for _ in range(30000):
         tree.do_rollout(board)
 
-    #global OC_CACHE
-    global PATCACHE
+    global OC_CACHE
+    #global PATCACHE
 
     amontecarlo = []
     zmontecarlo = tsp_obj
 
-    """for key, value in OC_CACHE.items():
+    for key, value in OC_CACHE.items():
         valor_medio = sum(value) / len(value)
 
         if valor_medio < zmontecarlo:
@@ -346,24 +396,24 @@ def main():
             for val in key:
                 amontecarlo.append(val)
 
-            zmontecarlo = valor_medio"""
+            zmontecarlo = valor_medio
 
-    for key, value in PATCACHE.items():
+    """for key, value in PATCACHE.items():
         if value < zmontecarlo:
             amontecarlo = []
 
             for val in key:
                 amontecarlo.append(val)
 
-            zmontecarlo = value
+            zmontecarlo = value"""
 
     amontecarlo.sort()
-    #zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
+    zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
 
     print("MIN - MONTE CARLO - OTIMIZADO")
     print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
 
-
+    """
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -386,7 +436,7 @@ def main():
     fix = {i: (1 if i in amin else 0) for i in C}
     modelA = archetti(C, c, q, r, Q, fix)
 
-    return n, x, y, amin, modelAll, modelA
+    return n, x, y, amin, modelAll, modelA"""
 
 
 OC_CACHE = defaultdict(list)
@@ -403,21 +453,21 @@ def _find_winner(free, pf, oc):
     if not oc:
         return None
 
-    """conjunto_com_ocasionais = []
+    conjunto_com_ocasionais = []
 
     for i in oc:
         if random.random() <= p_global[i]:  # oc accepted
-            conjunto_com_ocasionais.append(i)"""
+            conjunto_com_ocasionais.append(i)
 
-    conjunto_com_ocasionais = []
+    """conjunto_com_ocasionais = []
 
     for val in oc:
-        conjunto_com_ocasionais.append(val)
+        conjunto_com_ocasionais.append(val)"""
 
-    z = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, conjunto_com_ocasionais)
-    #OC_CACHE[oc].append(z)
+    z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+    OC_CACHE[oc].append(z)
 
-    print(f"oc={oc}, z = {z}")
+    print(f"oc={conjunto_com_ocasionais}, z = {z}")
 
     if z < tsp_obj:
         return True
