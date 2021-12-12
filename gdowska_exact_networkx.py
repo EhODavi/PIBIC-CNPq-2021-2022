@@ -14,7 +14,6 @@ for i in range(1, n + 1):
     else:
         G.add_node(i, color='blue', pos=(x[i], y[i]))
 
-
 modelAll.optimize()
 modelA.optimize()
 
