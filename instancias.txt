@@ -27,6 +27,7 @@ Q=13
 SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> 366
 MIN - EXAUSTIVO
 337 <- [2, 4, 5, 8, 11] -> eval chegou à 344.9 [2, 4, 5, 8, 13] com 10000 iterações do Monte Carlo (não demorou tanto)
+Com C=[11, 5, 4, 6, 8, 2, 3, 1, 12, 7, 13, 10, 9], o Monte Carlo chegou à solução ótima com 10000 iterações
 
 Instância 3:
 
@@ -115,6 +116,7 @@ Q=13
 SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> 366
 MIN - EXAUSTIVO
 357.5 <- [2, 4, 5, 6, 8, 11] -> eval chegou à 358.7 [2, 3, 4, 5, 6, 11, 13] com 10000 iterações do Monte Carlo (não demorou tanto)
+Com C=[11, 5, 4, 6, 8, 2, 3, 1, 12, 7, 13, 10, 9], o Monte Carlo chegou à solução ótima com 10000 iterações
 
 Instância 3.1:
 
@@ -130,6 +132,7 @@ Q=14
 SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> 317
 MIN - EXAUSTIVO
 189.1 <- [1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14] -> eval chegou à 203.8 [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14] com 10000 iterações do Monte Carlo (não demorou tanto)
+Com C=[12, 7, 2, 14, 1, 10, 13, 8, 5, 6, 11, 3, 9, 4], o Monte Carlo chegou à 192.5 [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] com 10000 iterações
 
 Instância 3.2:
 
@@ -145,6 +148,7 @@ Q=14
 SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> 317
 MIN - EXAUSTIVO
 315 <- [2, 7, 12, 14] -> eval chegou à 315.4 [2, 12, 13, 14] com 10000 iterações do Monte Carlo (não demorou tanto)
+Com C=[12, 7, 2, 14, 1, 10, 13, 8, 5, 6, 11, 3, 9, 4], o Monte Carlo chegou à 315.4 [1, 2, 7, 9, 12, 13, 14] com 10000 iterações
 
 Instância 1.3:
 
