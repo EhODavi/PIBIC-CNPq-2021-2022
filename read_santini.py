@@ -26,7 +26,7 @@ def read_santini(filename):
         line = f.readline()
 
     if line.find("EUC_2D") != -1:
-        dist = lambda x1, y1, x2, y2: int(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + .5))
+        dist = lambda x1, y1, x2, y2: int(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
     else:
         print("cannot deal with '%s' distances" % line)
         raise Exception

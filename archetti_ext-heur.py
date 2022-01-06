@@ -1,6 +1,7 @@
 import random
 import math
 from gurobipy import *
+from read_santini import read_santini
 
 
 def archetti(C, c, q, r, Q, fix):
@@ -71,6 +72,8 @@ def archetti(C, c, q, r, Q, fix):
 
 # globals
 MIPCACHE = {}
+
+
 def cache_archetti(C, c, q, r, Q, A):
     """
     check if current archetti model has already been solved; if not, solve and cache it
@@ -102,6 +105,8 @@ def cache_archetti(C, c, q, r, Q, A):
 
 # globals
 PATCACHE = {}
+
+
 def eval_archetti(C, c, q, p, r, Q, A):
     """
     evaluate archetti model with probability of couriers not accepting a delivery
@@ -171,12 +176,12 @@ def make_data(n):
     return C, c, q, p, r, Q
 
 
-
 if __name__ == "__main__":
     import time
     import itertools
     import sys
 
+    """
     # initialize the random generator
     try:
         r1 = int(sys.argv[1])
@@ -190,6 +195,67 @@ if __name__ == "__main__":
     except:
     	n = 15   # customers to serve
     C, c, q, p, r, Q = make_data(n)
+    """
+
+    if len(sys.argv) != 2:
+        print("usage: {} filename N".format(sys.argv[0]))
+        print("    where")
+        print("      - filename is the instance file (Santini's format)")
+        exit(-1)
+
+    C, c, x, y, p, r = read_santini(sys.argv[1])
+
+    C.pop()
+
+    for i in range(len(C)):
+        C[i] = int(C[i])
+
+    n = len(C)
+    Q = n
+
+    new_x = {}
+    new_y = {}
+
+    for key, value in x.items():
+        new_key = int(key) - 1
+        new_x[new_key] = value
+
+    for key, value in y.items():
+        new_key = int(key) - 1
+        new_y[new_key] = value
+
+    x = new_x
+    y = new_y
+
+    q = {}
+
+    for i in range(n + 1):
+        q[i] = 1
+
+    new_r = {}
+
+    for key, value in r.items():
+        new_key = int(key) - 1
+        new_r[new_key] = value
+
+    r = new_r
+
+    new_p = {}
+
+    for key, value in p.items():
+        new_key = int(key) - 1
+        new_p[new_key] = value
+
+    p = new_p
+
+    c = {}
+
+    distance = lambda x1, y1, x2, y2: int(math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2))
+
+    for i in [0] + C:
+        for j in [0] + C:
+            c[i, j] = distance(x[i], y[i], x[j], y[j])
+            c[j, i] = distance(x[i], y[i], x[j], y[j])
 
     # solution with no outsourcing
     amin = []
