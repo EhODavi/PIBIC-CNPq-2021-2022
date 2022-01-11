@@ -1,0 +1,7 @@
+Academic license - for non-commercial use only - expires 2022-09-27
+Using license file C:\gurobi912\win64\gurobi.lic
+initial -> 460
++{5} -> 417
++{3, 5} -> 400
+solution:
+{3, 5} -> 400

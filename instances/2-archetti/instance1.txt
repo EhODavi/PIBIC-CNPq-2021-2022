@@ -1,0 +1,9 @@
+Academic license - for non-commercial use only - expires 2022-09-27
+Using license file C:\gurobi912\win64\gurobi.lic
+initial -> 319
++{5} -> 301.3
++{2, 5} -> 296.5
++{2, 12, 5} -> 293.9
++{2, 10, 12, 5} -> 292.5
+solution:
+{2, 10, 12, 5} -> 292.5

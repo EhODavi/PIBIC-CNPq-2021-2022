@@ -1,12 +1,11 @@
-import sys
 import os
+from os import listdir
+from os.path import isfile, join
 
-if len(sys.argv) < 3:
-    print(sys.argv[0] + " #simulations compensation [compensation2 …]")
-    exit()
+path = 'instances/1'
 
-for c in sys.argv[2:]:
-    os.system("echo \"** Comp = " + c + " " + c + "\" | tee >> saida.txt")
+files = [f for f in listdir(path) if isfile(join(path, f))]
 
-    for i in range(0, int(sys.argv[1])):
-        os.system("python3 s-lmdloc.py " + str(i) + " " + c + " " + c + " >> saida.txt")
+for file in files:
+    os.system("python archetti_ext-heur.py instances/1/" + file + " > instances/1-archetti/" + file)
+    os.system("python gdowska_exact.py instances/1/" + file + " 10000 > instances/1-gdowska/" + file)

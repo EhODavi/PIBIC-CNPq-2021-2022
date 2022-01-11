@@ -462,7 +462,6 @@ def main():
     print("MIN - MONTE CARLO - OTIMIZADO")
     print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
 
-    """
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -478,6 +477,7 @@ def main():
     print("{:.4g} <- {}".format(zmin, amin))
     sys.stdout.flush()
 
+    """
     conjunto = []
     fix = {i: (1 if i in conjunto else 0) for i in C}
     modelAll = archetti(C, c, q, r, Q, fix)
