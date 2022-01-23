@@ -295,7 +295,9 @@ def main():
     import itertools
     import sys
 
-    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
+    inicio = time.time()
+
+    # global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
 
     if len(sys.argv) != 3:
         print("usage: {} filename N".format(sys.argv[0]))
@@ -381,6 +383,7 @@ def main():
         C, c, q, p, r, Q, x, y = make_data_random(n)
     """
 
+    """
     C_new = []
 
     for ci in C:
@@ -398,6 +401,7 @@ def main():
 
     for i in C_new:
         C.append(i[1])
+    """
 
     """
     print(f"n={n}")
@@ -410,30 +414,34 @@ def main():
     print(f"Q={Q}")
     """
 
+    """
     C_global = C
     c_global = c
     q_global = q
     p_global = p
     r_global = r
     Q_global = Q
+    """
 
     # solution with no outsourcing
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
     zmin = tsp_obj
     amin = []
-    print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
+    #print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
+    """
     tree = MCTS()
     board = new_lastmile(C)
 
     for _ in range(int(sys.argv[2])):
         tree.do_rollout(board)
+    """
 
     # global OC_CACHE
-    global PATCACHE
+    # global PATCACHE
 
-    amontecarlo = []
-    zmontecarlo = tsp_obj
+    # amontecarlo = []
+    # zmontecarlo = tsp_obj
 
     """
     for key, value in OC_CACHE.items():
@@ -448,6 +456,7 @@ def main():
             zmontecarlo = valor_medio
     """
 
+    """
     for key, value in PATCACHE.items():
         if value < zmontecarlo:
             amontecarlo = []
@@ -458,10 +467,11 @@ def main():
             zmontecarlo = value
 
     amontecarlo.sort()
+    """
     # zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
 
-    print("MIN - MONTE CARLO - OTIMIZADO")
-    print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
+    # print("MIN - MONTE CARLO - OTIMIZADO")
+    # print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
 
     C = []
     C.extend(range(1, n + 1))
@@ -470,13 +480,13 @@ def main():
     for i in range(1 << w):
         A = [ss for mask, ss in zip(masks, C) if i & mask]
         z = eval_archetti(C, c, q, p, r, Q, A)
-        #print("{:.4g} <- {}".format(z, A))
+        # print("{:.4g} <- {}".format(z, A))
         if z < zmin:
             zmin = z
             amin = A
-    print("MIN - EXAUSTIVO")
-    print("{:.4g} <- {}".format(zmin, amin))
-    sys.stdout.flush()
+    # print("MIN - EXAUSTIVO")
+    # print("{:.4g} <- {}".format(zmin, amin))
+    # sys.stdout.flush()
 
     """
     conjunto = []
@@ -488,6 +498,9 @@ def main():
 
     return n, x, y, amin, modelAll, modelA
     """
+
+    fim = time.time()
+    print(fim - inicio)
 
 
 # OC_CACHE = defaultdict(list)
@@ -520,7 +533,7 @@ def _find_winner(free, pf, oc):
     z = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, conjunto_com_ocasionais)
     # OC_CACHE[oc].append(z)
 
-    print(f"oc={conjunto_com_ocasionais}, z = {z}")
+    # print(f"oc={conjunto_com_ocasionais}, z = {z}")
 
     if z < tsp_obj:
         return True

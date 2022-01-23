@@ -181,6 +181,8 @@ if __name__ == "__main__":
     import itertools
     import sys
 
+    inicio = time.time()
+
     """
     # initialize the random generator
     try:
@@ -260,7 +262,7 @@ if __name__ == "__main__":
     # solution with no outsourcing
     amin = []
     zmin = cache_archetti(C, c, q, r, Q, [])
-    print("initial -> {:.4g}".format(zmin))
+    # print("initial -> {:.4g}".format(zmin))
     A = set()
     while True:
         sys.stdout.flush()
@@ -273,7 +275,7 @@ if __name__ == "__main__":
                 imin = i
         if imin != None:
             A.add(imin)
-            print("+{} -> {:.4g}".format(A,zmin))
+            # print("+{} -> {:.4g}".format(A,zmin))
 
             while True:
                 # print("---")
@@ -286,10 +288,13 @@ if __name__ == "__main__":
                 if jmin == None:
                     break
                 A.remove(jmin)
-                print("-{}:{} -> {:.4g}".format(A,jmin,zmin))
+                # print("-{}:{} -> {:.4g}".format(A,jmin,zmin))
         else:
             break
 
-    print("solution:")
-    print("{} -> {:.4g}".format(A, zmin))
+    # print("solution:")
+    # print("{} -> {:.4g}".format(A, zmin))
     sys.stdout.flush()
+
+    fim = time.time()
+    print(fim - inicio)
