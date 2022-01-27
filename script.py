@@ -2,10 +2,14 @@ import os
 from os import listdir
 from os.path import isfile, join
 
-path = 'instances/1'
+path = 'instances/2'
 
 files = [f for f in listdir(path) if isfile(join(path, f))]
 
 for file in files:
     # os.system("python archetti_ext-heur.py instances/1/" + file + " > instances/1-archetti-tempo/" + file)
-    os.system("python gdowska_exact.py instances/1/" + file + " 10000 > instances/1-exaustivo-tempo/" + file)
+    os.system("python gdowska_exact.py instances/2/" + file + " 10000 > instances/Gdowska-otimizado/2.1-gdowska/" + file)
+    os.system("python gdowska_exact.py instances/2/" + file + " 10000 > instances/Gdowska-otimizado/2.2-gdowska/" + file)
+    os.system("python gdowska_exact.py instances/2/" + file + " 10000 > instances/Gdowska-otimizado/2.3-gdowska/" + file)
+    os.system("python gdowska_exact.py instances/2/" + file + " 10000 > instances/Gdowska-otimizado/2.4-gdowska/" + file)
+    os.system("python gdowska_exact.py instances/2/" + file + " 10000 > instances/Gdowska-otimizado/2.5-gdowska/" + file)
