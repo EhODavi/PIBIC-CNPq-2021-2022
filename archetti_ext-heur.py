@@ -262,7 +262,7 @@ if __name__ == "__main__":
     # solution with no outsourcing
     amin = []
     zmin = cache_archetti(C, c, q, r, Q, [])
-    # print("initial -> {:.4g}".format(zmin))
+    print("initial -> {:.4g}".format(zmin))
     A = set()
     while True:
         sys.stdout.flush()
@@ -292,8 +292,8 @@ if __name__ == "__main__":
         else:
             break
 
-    # print("solution:")
-    # print("{} -> {:.4g}".format(A, zmin))
+    print("solution:")
+    print("{} -> {:.4g}".format(A, zmin))
     sys.stdout.flush()
 
     fim = time.time()

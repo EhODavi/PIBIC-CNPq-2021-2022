@@ -10,8 +10,9 @@ i = 1
 total = len(files)
 
 for file in files:
-    # os.system("python archetti_ext-heur.py instances/1/" + file + " > instances/1-archetti-tempo/" + file)
     print(f"Estou no arquivo {i} de {total}...")
+
+    # os.system("python archetti_ext-heur.py instances/1/" + file + " > instances/Archetti/novo/" + file)
 
     os.system("python gdowska_exact.py instances/1/" + file + " 1000 > instances/Gdowska-otimizado/novo/1000/1.1/" + file)
     os.system("python gdowska_exact.py instances/1/" + file + " 1000 > instances/Gdowska-otimizado/novo/1000/1.2/" + file)

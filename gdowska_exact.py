@@ -423,7 +423,7 @@ def main():
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
     zmin = tsp_obj
     amin = []
-    #print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
+    # print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
     tree = MCTS()
     board = new_lastmile(C)
