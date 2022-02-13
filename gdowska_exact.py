@@ -297,7 +297,7 @@ def main():
 
     inicio = time.time()
 
-    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
+    # global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
 
     if len(sys.argv) != 3:
         print("usage: {} filename N".format(sys.argv[0]))
@@ -383,6 +383,7 @@ def main():
         C, c, q, p, r, Q, x, y = make_data_random(n)
     """
 
+    """
     C_new = []
 
     for ci in C:
@@ -399,7 +400,8 @@ def main():
     C = []
 
     for i in C_new:
-        C.append(i[1])
+        C.append(i[1])    
+    """
 
     """
     print(f"n={n}")
@@ -412,19 +414,22 @@ def main():
     print(f"Q={Q}")
     """
 
+    """
     C_global = C
     c_global = c
     q_global = q
     p_global = p
     r_global = r
     Q_global = Q
+    """
 
     # solution with no outsourcing
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
     zmin = tsp_obj
     amin = []
-    # print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
+    print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
+    """
     tree = MCTS()
     board = new_lastmile(C)
 
@@ -448,7 +453,6 @@ def main():
 
             zmontecarlo = valor_medio
 
-    """
     for key, value in PATCACHE.items():
         if value < zmontecarlo:
             amontecarlo = []
@@ -457,15 +461,14 @@ def main():
                 amontecarlo.append(val)
 
             zmontecarlo = value
-    """
 
     amontecarlo.sort()
     zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
 
     print("MIN - MONTE CARLO - OTIMIZADO")
     print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
-
     """
+
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -477,10 +480,11 @@ def main():
         if z < zmin:
             zmin = z
             amin = A
-    # print("MIN - EXAUSTIVO")
-    # print("{:.4g} <- {}".format(zmin, amin))
-    # sys.stdout.flush()
+    print("MIN - EXAUSTIVO")
+    print("{:.4g} <- {}".format(zmin, amin))
+    sys.stdout.flush()
 
+    """
     conjunto = []
     fix = {i: (1 if i in conjunto else 0) for i in C}
     modelAll = archetti(C, c, q, r, Q, fix)
