@@ -295,9 +295,9 @@ def main():
     import itertools
     import sys
 
-    inicio = time.time()
+    # inicio = time.time()
 
-    # global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
+    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
 
     if len(sys.argv) != 3:
         print("usage: {} filename N".format(sys.argv[0]))
@@ -383,7 +383,6 @@ def main():
         C, c, q, p, r, Q, x, y = make_data_random(n)
     """
 
-    """
     C_new = []
 
     for ci in C:
@@ -400,8 +399,7 @@ def main():
     C = []
 
     for i in C_new:
-        C.append(i[1])    
-    """
+        C.append(i[1])
 
     """
     print(f"n={n}")
@@ -414,22 +412,19 @@ def main():
     print(f"Q={Q}")
     """
 
-    """
     C_global = C
     c_global = c
     q_global = q
     p_global = p
     r_global = r
     Q_global = Q
-    """
 
     # solution with no outsourcing
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
-    zmin = tsp_obj
-    amin = []
-    print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
+    # zmin = tsp_obj
+    # amin = []
+    # print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
-    """
     tree = MCTS()
     board = new_lastmile(C)
 
@@ -438,6 +433,16 @@ def main():
 
     global OC_CACHE
     # global PATCACHE
+
+    maior_n = -math.inf
+    conjunto = []
+
+    for key, value in OC_CACHE.items():
+        print(f"{key} = {len(value)}")
+
+        if len(value) > maior_n:
+            conjunto = key
+            maior_n = len(value)
 
     amontecarlo = []
     zmontecarlo = tsp_obj
@@ -453,6 +458,7 @@ def main():
 
             zmontecarlo = valor_medio
 
+    """
     for key, value in PATCACHE.items():
         if value < zmontecarlo:
             amontecarlo = []
@@ -461,14 +467,15 @@ def main():
                 amontecarlo.append(val)
 
             zmontecarlo = value
+    """
 
     amontecarlo.sort()
     zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
 
-    print("MIN - MONTE CARLO - OTIMIZADO")
-    print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
-    """
+    # print("MIN - MONTE CARLO - OTIMIZADO")
+    # print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
 
+    """
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -484,7 +491,6 @@ def main():
     print("{:.4g} <- {}".format(zmin, amin))
     sys.stdout.flush()
 
-    """
     conjunto = []
     fix = {i: (1 if i in conjunto else 0) for i in C}
     modelAll = archetti(C, c, q, r, Q, fix)
@@ -493,10 +499,10 @@ def main():
     modelA = archetti(C, c, q, r, Q, fix)
 
     return n, x, y, amin, modelAll, modelA
-    """
 
     fim = time.time()
     print(fim - inicio)
+    """
 
 
 OC_CACHE = defaultdict(list)
