@@ -435,13 +435,20 @@ def main():
     # global PATCACHE
 
     maior_n = -math.inf
-    conjunto = []
+    conjunto_mais_visitado = []
 
     for key, value in OC_CACHE.items():
-        print(f"{key} = {len(value)}")
+        conjunto = []
+
+        for val in key:
+            conjunto.append(val)
+
+        conjunto.sort()
+
+        print(f"{conjunto} = {len(value)}")
 
         if len(value) > maior_n:
-            conjunto = key
+            conjunto_mais_visitado = conjunto.copy()
             maior_n = len(value)
 
     amontecarlo = []
@@ -470,10 +477,14 @@ def main():
     """
 
     amontecarlo.sort()
+    conjunto_mais_visitado.sort()
     zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
+    zmontecarlo_mais_visitado = eval_archetti(C, c, q, p, r, Q, conjunto_mais_visitado)
 
-    # print("MIN - MONTE CARLO - OTIMIZADO")
-    # print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
+    print("\nMIN - MONTE CARLO - CONJUNTO COM MELHOR MÉDIA")
+    print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
+    print("\nMIN - MONTE CARLO - CONJUNTO MAIS VISITADO")
+    print("{:.4g} <- {}".format(zmontecarlo_mais_visitado, conjunto_mais_visitado))
 
     """
     C = []
