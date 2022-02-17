@@ -297,13 +297,12 @@ def main():
 
     # inicio = time.time()
 
-    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
+    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global, PATCACHE
 
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 2:
         print("usage: {} filename N".format(sys.argv[0]))
         print("    where")
         print("      - filename is the instance file (Santini's format)")
-        print("      - N is the number of iterations")
         exit(-1)
 
     C, c, x, y, p, r = read_santini(sys.argv[1])
@@ -401,17 +400,6 @@ def main():
     for i in C_new:
         C.append(i[1])
 
-    """
-    print(f"n={n}")
-    print(f"C={C}")
-    print(f"x={x}")
-    print(f"y={y}")
-    print(f"q={q}")
-    print(f"p={p}")
-    print(f"r={r}")
-    print(f"Q={Q}")
-    """
-
     C_global = C
     c_global = c
     q_global = q
@@ -421,22 +409,17 @@ def main():
 
     # solution with no outsourcing
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
-    # zmin = tsp_obj
-    # amin = []
-    # print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
+    zmin = tsp_obj
+    amin = []
+    print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
     tree = MCTS()
     board = new_lastmile(C)
 
-    for _ in range(int(sys.argv[2])):
+    for _ in range(100):
         tree.do_rollout(board)
 
-    global OC_CACHE
-    # global PATCACHE
-
-    maior_n = -math.inf
-    conjunto_mais_visitado = []
-
+    """
     for key, value in OC_CACHE.items():
         conjunto = []
 
@@ -446,14 +429,9 @@ def main():
         conjunto.sort()
 
         print(f"{conjunto} = {len(value)}")
+    """
 
-        if len(value) > maior_n:
-            conjunto_mais_visitado = conjunto.copy()
-            maior_n = len(value)
-
-    amontecarlo = []
-    zmontecarlo = tsp_obj
-
+    """
     for key, value in OC_CACHE.items():
         valor_medio = sum(value) / len(value)
 
@@ -464,8 +442,11 @@ def main():
                 amontecarlo.append(val)
 
             zmontecarlo = valor_medio
-
     """
+
+    amontecarlo = []
+    zmontecarlo = tsp_obj
+
     for key, value in PATCACHE.items():
         if value < zmontecarlo:
             amontecarlo = []
@@ -474,19 +455,12 @@ def main():
                 amontecarlo.append(val)
 
             zmontecarlo = value
-    """
 
     amontecarlo.sort()
-    conjunto_mais_visitado.sort()
-    zmontecarlo = eval_archetti(C, c, q, p, r, Q, amontecarlo)
-    zmontecarlo_mais_visitado = eval_archetti(C, c, q, p, r, Q, conjunto_mais_visitado)
 
-    print("\nMIN - MONTE CARLO - CONJUNTO COM MELHOR MÉDIA")
+    print("\nMIN - MONTE CARLO")
     print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
-    print("\nMIN - MONTE CARLO - CONJUNTO MAIS VISITADO")
-    print("{:.4g} <- {}".format(zmontecarlo_mais_visitado, conjunto_mais_visitado))
 
-    """
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -498,10 +472,11 @@ def main():
         if z < zmin:
             zmin = z
             amin = A
-    print("MIN - EXAUSTIVO")
+    print("\nMIN - EXAUSTIVO")
     print("{:.4g} <- {}".format(zmin, amin))
     sys.stdout.flush()
 
+    """
     conjunto = []
     fix = {i: (1 if i in conjunto else 0) for i in C}
     modelAll = archetti(C, c, q, r, Q, fix)
@@ -530,21 +505,21 @@ def _find_winner(free, pf, oc):
     if not oc:
         return None
 
+    """
     conjunto_com_ocasionais = []
 
     for i in oc:
         if random.random() <= p_global[i]:  # oc accepted
             conjunto_com_ocasionais.append(i)
-
     """
+
     conjunto_com_ocasionais = []
 
     for val in oc:
         conjunto_com_ocasionais.append(val)
-    """
 
-    z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
-    OC_CACHE[oc].append(z)
+    z = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, conjunto_com_ocasionais)
+    #OC_CACHE[oc].append(z)
 
     # print(f"oc={conjunto_com_ocasionais}, z = {z}")
 
