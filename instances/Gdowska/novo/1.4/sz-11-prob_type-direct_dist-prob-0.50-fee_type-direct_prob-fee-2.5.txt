@@ -1,0 +1,8 @@
+Set parameter Username
+Academic license - for non-commercial use only - expires 2023-01-17
+417.5 <- [1, 3, 4, 5, 6, 8, 10] - i = 10
+410 <- [2, 4, 5, 6, 10] - i = 25
+410 <- [2, 4, 5, 6, 10] - i = 50
+410 <- [2, 4, 5, 6, 10] - i = 75
+410 <- [2, 4, 5, 6, 10] - i = 100
+7.693578243255615

@@ -295,7 +295,7 @@ def main():
     import itertools
     import sys
 
-    # inicio = time.time()
+    inicio = time.time()
 
     global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global, PATCACHE
 
@@ -413,11 +413,30 @@ def main():
     amin = []
     print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
+    """
     tree = MCTS()
     board = new_lastmile(C)
 
-    for _ in range(100):
+    for i in range(1, 101):
         tree.do_rollout(board)
+
+        if i in (10, 25, 50, 75, 100):
+            amontecarlo = []
+            zmontecarlo = tsp_obj
+
+            for key, value in PATCACHE.items():
+                if value < zmontecarlo:
+                    amontecarlo = []
+
+                    for val in key:
+                        amontecarlo.append(val)
+
+                    zmontecarlo = value
+
+            amontecarlo.sort()
+
+            print("{:.4g} <- {} - i = {}".format(zmontecarlo, amontecarlo, i))
+    """
 
     """
     for key, value in OC_CACHE.items():
@@ -444,23 +463,6 @@ def main():
             zmontecarlo = valor_medio
     """
 
-    amontecarlo = []
-    zmontecarlo = tsp_obj
-
-    for key, value in PATCACHE.items():
-        if value < zmontecarlo:
-            amontecarlo = []
-
-            for val in key:
-                amontecarlo.append(val)
-
-            zmontecarlo = value
-
-    amontecarlo.sort()
-
-    print("\nMIN - MONTE CARLO")
-    print("{:.4g} <- {}".format(zmontecarlo, amontecarlo))
-
     C = []
     C.extend(range(1, n + 1))
     w = len(C)
@@ -485,10 +487,10 @@ def main():
     modelA = archetti(C, c, q, r, Q, fix)
 
     return n, x, y, amin, modelAll, modelA
+    """
 
     fim = time.time()
     print(fim - inicio)
-    """
 
 
 OC_CACHE = defaultdict(list)
@@ -519,7 +521,7 @@ def _find_winner(free, pf, oc):
         conjunto_com_ocasionais.append(val)
 
     z = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, conjunto_com_ocasionais)
-    #OC_CACHE[oc].append(z)
+    # OC_CACHE[oc].append(z)
 
     # print(f"oc={conjunto_com_ocasionais}, z = {z}")
 
