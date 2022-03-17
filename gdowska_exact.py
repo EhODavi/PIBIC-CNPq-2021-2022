@@ -421,49 +421,49 @@ def main():
     zmontecarlo1 = tsp_obj
 
     amontecarlo2 = []
-    qtd_mais_visitado = 0
 
     tree = MCTS()
     board = new_lastmile(C)
 
-    for i in range(10000):
+    for i in range(int(0.3 * pow(2, len(C)))):
         tree.do_rollout(board)
 
     total = 0
 
+    conjuntos = []
+
     for key, value in OC_CACHE.items():
+        conjuntos.append((key, value, len(value)))
+
+    conjuntos.sort(key=lambda x: x[2], reverse=True)
+
+    for i in range(len(conjuntos)):
+        total = total + conjuntos[i][2]
+
         conjunto = []
 
-        for val in key:
-            conjunto.append(val)
+        for item in conjuntos[i][0]:
+            conjunto.append(item)
 
         conjunto.sort()
 
-        print(f"{conjunto} = {len(value)}")
-
-        total = total + len(value)
+        print(f"{conjunto} = {conjuntos[i][2]}")
 
     print(f"Total = {total}")
 
-    for key, value in OC_CACHE.items():
-        valor_medio = sum(value) / len(value)
-        tamanho = len(value)
+    for i in range(int(0.1 * len(conjuntos))):
+        valor_medio = sum(conjuntos[i][1]) / conjuntos[i][2]
 
         if valor_medio < zmontecarlo1:
             amontecarlo1 = []
 
-            for val in key:
+            for val in conjuntos[i][0]:
                 amontecarlo1.append(val)
 
             zmontecarlo1 = valor_medio
 
-        if tamanho > qtd_mais_visitado:
-            amontecarlo2 = []
-
-            for val in key:
-                amontecarlo2.append(val)
-
-            qtd_mais_visitado = tamanho
+    for val in conjuntos[0][0]:
+        amontecarlo2.append(val)
 
     fim = time.time()
 
@@ -534,7 +534,9 @@ def _find_winner(free, pf, oc):
     """
 
     z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+
     OC_CACHE[oc].append(z)
+    z = sum(OC_CACHE[oc]) / len(OC_CACHE[oc])
 
     # print(f"oc={conjunto_com_ocasionais}, z = {z}")
 
