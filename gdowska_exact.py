@@ -415,20 +415,20 @@ def main():
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
     # zmin = tsp_obj
     # amin = []
-    print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
+    # print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
     amontecarlo1 = []
     zmontecarlo1 = tsp_obj
 
-    amontecarlo2 = []
+    # amontecarlo2 = []
 
     tree = MCTS()
     board = new_lastmile(C)
 
-    for i in range(int(0.3 * pow(2, len(C)))):
+    for i in range(int(0.1 * pow(2, len(C)) + 100)):
         tree.do_rollout(board)
 
-    total = 0
+    # total = 0
 
     conjuntos = []
 
@@ -437,6 +437,7 @@ def main():
 
     conjuntos.sort(key=lambda x: x[2], reverse=True)
 
+    """
     for i in range(len(conjuntos)):
         total = total + conjuntos[i][2]
 
@@ -448,8 +449,9 @@ def main():
         conjunto.sort()
 
         print(f"{conjunto} = {conjuntos[i][2]}")
-
+    
     print(f"Total = {total}")
+    """
 
     for i in range(int(0.1 * len(conjuntos))):
         valor_medio = sum(conjuntos[i][1]) / conjuntos[i][2]
@@ -462,19 +464,21 @@ def main():
 
             zmontecarlo1 = valor_medio
 
+    """
     for val in conjuntos[0][0]:
         amontecarlo2.append(val)
+    """
 
     fim = time.time()
 
     amontecarlo1.sort()
-    amontecarlo2.sort()
+    # amontecarlo2.sort()
 
     zmontecarlo1 = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, amontecarlo1)
-    zmontecarlo2 = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, amontecarlo2)
+    # zmontecarlo2 = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, amontecarlo2)
 
     print("MELHOR MÉDIA - {:.4g} <- {}".format(zmontecarlo1, amontecarlo1))
-    print("MAIS VISITADO - {:.4g} <- {}".format(zmontecarlo2, amontecarlo2))
+    # print("MAIS VISITADO - {:.4g} <- {}".format(zmontecarlo2, amontecarlo2))
     print(fim - inicio)
 
     """

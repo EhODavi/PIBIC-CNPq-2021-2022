@@ -1,24 +1,24 @@
 from os import listdir
 from os.path import isfile, join
 
-path = 'instances/Gdowska/novo/1.1'
+path = 'instances/a/montecarlo/1'
 
 files = [f for f in listdir(path) if isfile(join(path, f))]
 
 for file in files:
-    arquivo1 = open('instances/Gdowska/novo/1.1/' + file, 'r')
+    arquivo1 = open('instances/a/montecarlo/1/' + file, 'r')
     conteudo_arquivo1 = []
 
-    arquivo2 = open('instances/Gdowska/novo/1.2/' + file, 'r')
+    arquivo2 = open('instances/a/montecarlo/2/' + file, 'r')
     conteudo_arquivo2 = []
 
-    arquivo3 = open('instances/Gdowska/novo/1.3/' + file, 'r')
+    arquivo3 = open('instances/a/montecarlo/3/' + file, 'r')
     conteudo_arquivo3 = []
 
-    arquivo4 = open('instances/Gdowska/novo/1.4/' + file, 'r')
+    arquivo4 = open('instances/a/montecarlo/4/' + file, 'r')
     conteudo_arquivo4 = []
 
-    arquivo5 = open('instances/Gdowska/novo/1.5/' + file, 'r')
+    arquivo5 = open('instances/a/montecarlo/5/' + file, 'r')
     conteudo_arquivo5 = []
 
     for linha in arquivo1:
@@ -41,11 +41,11 @@ for file in files:
         linha = linha.strip()
         conteudo_arquivo5.append(linha)
 
-    linha1 = conteudo_arquivo1[7].split() # mudar
-    linha2 = conteudo_arquivo2[7].split() # mudar
-    linha3 = conteudo_arquivo3[7].split() # mudar
-    linha4 = conteudo_arquivo4[7].split() # mudar
-    linha5 = conteudo_arquivo5[7].split() # mudar
+    linha1 = conteudo_arquivo1[3].split() # mudar
+    linha2 = conteudo_arquivo2[3].split() # mudar
+    linha3 = conteudo_arquivo3[3].split() # mudar
+    linha4 = conteudo_arquivo4[3].split() # mudar
+    linha5 = conteudo_arquivo5[3].split() # mudar
 
     numero1 = float(linha1[0])
     numero2 = float(linha2[0])
