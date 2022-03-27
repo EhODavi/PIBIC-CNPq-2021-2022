@@ -425,7 +425,7 @@ def main():
     tree = MCTS()
     board = new_lastmile(C)
 
-    for i in range(int(0.1 * pow(2, len(C)) + 100)):
+    for i in range(int(0.4 * pow(2, len(C)) + 100)):
         tree.do_rollout(board)
 
     # total = 0
@@ -439,7 +439,7 @@ def main():
 
     """
     for i in range(len(conjuntos)):
-        total = total + conjuntos[i][2]
+        # total = total + conjuntos[i][2]
 
         conjunto = []
 
@@ -449,9 +449,9 @@ def main():
         conjunto.sort()
 
         print(f"{conjunto} = {conjuntos[i][2]}")
-    
-    print(f"Total = {total}")
     """
+    
+    # print(f"Total = {total}")
 
     for i in range(int(0.1 * len(conjuntos))):
         valor_medio = sum(conjuntos[i][1]) / conjuntos[i][2]

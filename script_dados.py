@@ -41,11 +41,11 @@ for file in files:
         linha = linha.strip()
         conteudo_arquivo5.append(linha)
 
-    linha1 = conteudo_arquivo1[3].split() # mudar
-    linha2 = conteudo_arquivo2[3].split() # mudar
-    linha3 = conteudo_arquivo3[3].split() # mudar
-    linha4 = conteudo_arquivo4[3].split() # mudar
-    linha5 = conteudo_arquivo5[3].split() # mudar
+    linha1 = conteudo_arquivo1[3].split()
+    linha2 = conteudo_arquivo2[3].split()
+    linha3 = conteudo_arquivo3[3].split()
+    linha4 = conteudo_arquivo4[3].split()
+    linha5 = conteudo_arquivo5[3].split()
 
     numero1 = float(linha1[0])
     numero2 = float(linha2[0])
@@ -53,7 +53,7 @@ for file in files:
     numero4 = float(linha4[0])
     numero5 = float(linha5[0])
 
-    print(f"{round((numero1 + numero2 + numero3 + numero4 + numero5) / 5, 2)}")
+    print(round((numero1 + numero2 + numero3 + numero4 + numero5) / 5, 2))
 
     arquivo1.close()
     arquivo2.close()
