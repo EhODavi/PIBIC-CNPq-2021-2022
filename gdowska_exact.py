@@ -37,12 +37,16 @@ class LastMile(_Gdowska, Node):
 
         self = self._replace(winner=win)
 
+        """
         if self.winner is None:
             return 0.5  # Board is a tie
         elif self.winner == False:
             return 0
         elif self.winner == True:
             return 1
+        """
+
+        return self.winner
         # The winner is neither True, False, nor None
         raise RuntimeError(f"board has unknown winner type {self.winner}")
 
@@ -437,7 +441,6 @@ def main():
 
     conjuntos.sort(key=lambda x: x[2], reverse=True)
 
-    """
     for i in range(len(conjuntos)):
         # total = total + conjuntos[i][2]
 
@@ -449,11 +452,11 @@ def main():
         conjunto.sort()
 
         print(f"{conjunto} = {conjuntos[i][2]}")
-    """
     
     # print(f"Total = {total}")
 
-    for i in range(int(0.1 * len(conjuntos))):
+    # for i in range(int(0.05 * len(conjuntos))):
+    for i in range(5):
         valor_medio = sum(conjuntos[i][1]) / conjuntos[i][2]
 
         if valor_medio < zmontecarlo1:
@@ -522,7 +525,7 @@ def _find_winner(free, pf, oc):
         raise RuntimeError(f"find winner call called on nonterminal board {free, pf, oc}")
 
     if not oc:
-        return None
+        return 0
 
     conjunto_com_ocasionais = []
 
@@ -540,16 +543,20 @@ def _find_winner(free, pf, oc):
     z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
 
     OC_CACHE[oc].append(z)
-    z = sum(OC_CACHE[oc]) / len(OC_CACHE[oc])
+    # z = sum(OC_CACHE[oc]) / len(OC_CACHE[oc])
 
     # print(f"oc={conjunto_com_ocasionais}, z = {z}")
 
+    """
     if z < tsp_obj:
         return True
     elif z > tsp_obj:
         return False
     else:
         return None
+    """
+
+    return tsp_obj - z
 
 
 def new_lastmile(C):
@@ -557,7 +564,7 @@ def new_lastmile(C):
     pf = frozenset()  # professional fleet's vertices
     oc = frozenset()  # outsourced vertices
 
-    return LastMile(free=free, pf=pf, oc=oc, winner=None, terminal=False)
+    return LastMile(free=free, pf=pf, oc=oc, winner=-111, terminal=False)
 
 
 if __name__ == "__main__":
