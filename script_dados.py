@@ -1,6 +1,8 @@
 from os import listdir
 from os.path import isfile, join
 
+import numpy as np
+
 path = 'instances/a/montecarlo/1'
 
 files = [f for f in listdir(path) if isfile(join(path, f))]
@@ -41,19 +43,25 @@ for file in files:
         linha = linha.strip()
         conteudo_arquivo5.append(linha)
 
-    linha1 = conteudo_arquivo1[3].split()
-    linha2 = conteudo_arquivo2[3].split()
-    linha3 = conteudo_arquivo3[3].split()
-    linha4 = conteudo_arquivo4[3].split()
-    linha5 = conteudo_arquivo5[3].split()
+    linha1 = conteudo_arquivo1[2].split()
+    linha2 = conteudo_arquivo2[2].split()
+    linha3 = conteudo_arquivo3[2].split()
+    linha4 = conteudo_arquivo4[2].split()
+    linha5 = conteudo_arquivo5[2].split()
 
-    numero1 = float(linha1[0])
-    numero2 = float(linha2[0])
-    numero3 = float(linha3[0])
-    numero4 = float(linha4[0])
-    numero5 = float(linha5[0])
+    numero1 = float(linha1[3])
+    numero2 = float(linha2[3])
+    numero3 = float(linha3[3])
+    numero4 = float(linha4[3])
+    numero5 = float(linha5[3])
 
-    print(round((numero1 + numero2 + numero3 + numero4 + numero5) / 5, 2))
+    vetor = [numero1, numero2, numero3, numero4, numero5]
+
+    # print(round((numero1 + numero2 + numero3 + numero4 + numero5) / 5, 2))
+
+    # print(min(numero1, numero2, numero3, numero4, numero5))
+
+    print(round(np.std(vetor, ddof=1), 2))
 
     arquivo1.close()
     arquivo2.close()

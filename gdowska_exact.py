@@ -441,7 +441,6 @@ def main():
 
     conjuntos.sort(key=lambda x: x[2], reverse=True)
 
-    """
     for i in range(len(conjuntos)):
         # total = total + conjuntos[i][2]
 
@@ -453,7 +452,6 @@ def main():
         conjunto.sort()
 
         print(f"{conjunto} = {conjuntos[i][2]}")
-    """
     
     # print(f"Total = {total}")
 
