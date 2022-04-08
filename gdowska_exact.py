@@ -429,7 +429,7 @@ def main():
     tree = MCTS()
     board = new_lastmile(C)
 
-    for i in range(int(0.4 * pow(2, len(C)) + 100)):
+    for i in range(int(0.1 * pow(2, len(C)) + 100)):
         tree.do_rollout(board)
 
     # total = 0
@@ -527,12 +527,6 @@ def _find_winner(free, pf, oc):
     if not oc:
         return 0
 
-    conjunto_com_ocasionais = []
-
-    for i in oc:
-        if random.random() <= p_global[i]:  # oc accepted
-            conjunto_com_ocasionais.append(i)
-
     """
     conjunto_com_ocasionais = []
 
@@ -540,9 +534,20 @@ def _find_winner(free, pf, oc):
         conjunto_com_ocasionais.append(val)
     """
 
-    z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+    total = 0
 
-    OC_CACHE[oc].append(z)
+    for i in range(3):
+        conjunto_com_ocasionais = []
+
+        for i in oc:
+            if random.random() <= p_global[i]:  # oc accepted
+                conjunto_com_ocasionais.append(i)
+
+        z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+
+        OC_CACHE[oc].append(z)
+
+        total = total + (tsp_obj - z)
     # z = sum(OC_CACHE[oc]) / len(OC_CACHE[oc])
 
     # print(f"oc={conjunto_com_ocasionais}, z = {z}")
@@ -556,7 +561,7 @@ def _find_winner(free, pf, oc):
         return None
     """
 
-    return tsp_obj - z
+    return total
 
 
 def new_lastmile(C):
