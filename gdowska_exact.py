@@ -421,15 +421,18 @@ def main():
     # amin = []
     # print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
 
-    amontecarlo1 = []
-    zmontecarlo1 = tsp_obj
+    # amontecarlo1 = []
+    # zmontecarlo1 = tsp_obj
 
     # amontecarlo2 = []
 
     tree = MCTS()
     board = new_lastmile(C)
 
-    for i in range(int(0.1 * pow(2, len(C)) + 100)):
+    tot = int(0.4 * pow(2, len(C)) + 1000)
+    tot = int(tot / 2)
+
+    for i in range(tot):
         tree.do_rollout(board)
 
     # total = 0
@@ -441,6 +444,7 @@ def main():
 
     conjuntos.sort(key=lambda x: x[2], reverse=True)
 
+    """
     for i in range(len(conjuntos)):
         # total = total + conjuntos[i][2]
 
@@ -452,10 +456,12 @@ def main():
         conjunto.sort()
 
         print(f"{conjunto} = {conjuntos[i][2]}")
+    """
     
     # print(f"Total = {total}")
 
     # for i in range(int(0.05 * len(conjuntos))):
+    """
     for i in range(5):
         valor_medio = sum(conjuntos[i][1]) / conjuntos[i][2]
 
@@ -466,22 +472,52 @@ def main():
                 amontecarlo1.append(val)
 
             zmontecarlo1 = valor_medio
+    """
 
-    """
+    amontecarlo1 = []
+
     for val in conjuntos[0][0]:
-        amontecarlo2.append(val)
-    """
+        amontecarlo1.append(val)
+
+    amontecarlo1.sort()
+
+    zmontecarlo1 = sum(conjuntos[0][1]) / conjuntos[0][2]
+
+    to = int(tot / len(C))
+
+    for i in range(len(C)):
+        new_amontecarlo1 = amontecarlo1.copy()
+
+        if C[-i - 1] in new_amontecarlo1:
+            new_amontecarlo1.remove(C[-i - 1])
+        else:
+            new_amontecarlo1.append(C[-i - 1])
+            new_amontecarlo1.sort()
+
+        a = frozenset(new_amontecarlo1)
+
+        for j in range(to):
+            conjunto_com_ocasionais = []
+
+            for k in new_amontecarlo1:
+                if random.random() <= p_global[k]:  # oc accepted
+                    conjunto_com_ocasionais.append(k)
+
+            z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+
+            OC_CACHE[a].append(z)
+
+        new_zmontecarlo1 = sum(OC_CACHE[a]) / len(OC_CACHE[a])
+
+        if new_zmontecarlo1 < zmontecarlo1:
+            amontecarlo1 = new_amontecarlo1.copy()
+            zmontecarlo1 = new_zmontecarlo1
 
     fim = time.time()
 
-    amontecarlo1.sort()
-    # amontecarlo2.sort()
-
     zmontecarlo1 = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, amontecarlo1)
-    # zmontecarlo2 = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, amontecarlo2)
 
     print("MELHOR MÉDIA - {:.4g} <- {}".format(zmontecarlo1, amontecarlo1))
-    # print("MAIS VISITADO - {:.4g} <- {}".format(zmontecarlo2, amontecarlo2))
     print(fim - inicio)
 
     """
@@ -534,20 +570,16 @@ def _find_winner(free, pf, oc):
         conjunto_com_ocasionais.append(val)
     """
 
-    total = 0
+    conjunto_com_ocasionais = []
 
-    for i in range(3):
-        conjunto_com_ocasionais = []
+    for j in oc:
+        if random.random() <= p_global[j]:  # oc accepted
+            conjunto_com_ocasionais.append(j)
 
-        for i in oc:
-            if random.random() <= p_global[i]:  # oc accepted
-                conjunto_com_ocasionais.append(i)
+    z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
 
-        z = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+    OC_CACHE[oc].append(z)
 
-        OC_CACHE[oc].append(z)
-
-        total = total + (tsp_obj - z)
     # z = sum(OC_CACHE[oc]) / len(OC_CACHE[oc])
 
     # print(f"oc={conjunto_com_ocasionais}, z = {z}")
@@ -561,7 +593,7 @@ def _find_winner(free, pf, oc):
         return None
     """
 
-    return total
+    return tsp_obj - z
 
 
 def new_lastmile(C):
