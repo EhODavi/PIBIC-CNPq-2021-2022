@@ -2,7 +2,7 @@ import os
 from os import listdir
 from os.path import isfile, join
 
-path = 'instances/a1'
+path = 'instances/1'
 
 files = [f for f in listdir(path) if isfile(join(path, f))]
 
@@ -16,10 +16,10 @@ for file in files:
 
     # os.system("python gdowska_exact.py instances/1/" + file + " > instances/Exaustivo/novo/" + file)
 
-    os.system("python gdowska_exact.py instances/a1/" + file + " > instances/a/montecarlo/1/" + file)
-    os.system("python gdowska_exact.py instances/a1/" + file + " > instances/a/montecarlo/2/" + file)
-    os.system("python gdowska_exact.py instances/a1/" + file + " > instances/a/montecarlo/3/" + file)
-    os.system("python gdowska_exact.py instances/a1/" + file + " > instances/a/montecarlo/4/" + file)
-    os.system("python gdowska_exact.py instances/a1/" + file + " > instances/a/montecarlo/5/" + file)
+    os.system("python gdowska_exact.py instances/1/" + file + " > instances/a/montecarlo/1/" + file)
+    os.system("python gdowska_exact.py instances/1/" + file + " > instances/a/montecarlo/2/" + file)
+    os.system("python gdowska_exact.py instances/1/" + file + " > instances/a/montecarlo/3/" + file)
+    os.system("python gdowska_exact.py instances/1/" + file + " > instances/a/montecarlo/4/" + file)
+    os.system("python gdowska_exact.py instances/1/" + file + " > instances/a/montecarlo/5/" + file)
 
     i = i + 1
