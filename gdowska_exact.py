@@ -8,6 +8,7 @@ from read_santini import read_santini
 _Gdowska = namedtuple("Gdowska", "free pf oc winner terminal")
 
 tsp_obj = None
+melhor_solucao = None
 C_global = None
 c_global = None
 q_global = None
@@ -305,7 +306,7 @@ def main():
 
     inicio = time.time()
 
-    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global, PATCACHE, OC_CACHE
+    global tsp_obj, melhor_solucao, C_global, c_global, q_global, p_global, r_global, Q_global, PATCACHE, OC_CACHE
 
     if len(sys.argv) != 2:
         print("usage: {} filename N".format(sys.argv[0]))
@@ -417,6 +418,7 @@ def main():
 
     # solution with no outsourcing
     tsp_obj = cache_archetti(C, c, q, r, Q, [])
+    melhor_solucao = tsp_obj
     # zmin = tsp_obj
     # amin = []
     # print("SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> {:.4g}".format(tsp_obj))
@@ -429,8 +431,8 @@ def main():
     tree = MCTS()
     board = new_lastmile(C)
 
-    tot = int(0.4 * pow(2, len(C)) + 1000)
-    tot = int(tot / 2)
+    tot = int(0.2 * pow(2, len(C)) + 1000)
+    # tot = int(tot / 2)
 
     for i in range(tot):
         tree.do_rollout(board)
@@ -444,7 +446,6 @@ def main():
 
     conjuntos.sort(key=lambda x: x[2], reverse=True)
 
-    """
     for i in range(len(conjuntos)):
         # total = total + conjuntos[i][2]
 
@@ -456,31 +457,35 @@ def main():
         conjunto.sort()
 
         print(f"{conjunto} = {conjuntos[i][2]}")
-    """
     
     # print(f"Total = {total}")
 
     # for i in range(int(0.05 * len(conjuntos))):
-    """
-    for i in range(5):
+
+    amontecarlo = []
+    zmontecarlo = tsp_obj
+
+    for i in range(10):
         valor_medio = sum(conjuntos[i][1]) / conjuntos[i][2]
 
-        if valor_medio < zmontecarlo1:
-            amontecarlo1 = []
+        if valor_medio < zmontecarlo:
+            amontecarlo = []
 
             for val in conjuntos[i][0]:
-                amontecarlo1.append(val)
+                amontecarlo.append(val)
 
-            zmontecarlo1 = valor_medio
+            zmontecarlo = valor_medio
+
     """
-
     amontecarlo1 = []
 
     for val in conjuntos[0][0]:
         amontecarlo1.append(val)
+    """
 
-    amontecarlo1.sort()
+    amontecarlo.sort()
 
+    """
     zmontecarlo1 = sum(conjuntos[0][1]) / conjuntos[0][2]
 
     to = int(tot / len(C))
@@ -512,12 +517,13 @@ def main():
         if new_zmontecarlo1 < zmontecarlo1:
             amontecarlo1 = new_amontecarlo1.copy()
             zmontecarlo1 = new_zmontecarlo1
+    """
 
     fim = time.time()
 
-    zmontecarlo1 = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, amontecarlo1)
+    zmontecarlo = eval_archetti(C_global, c_global, q_global, p_global, r_global, Q_global, amontecarlo)
 
-    print("MELHOR MÉDIA - {:.4g} <- {}".format(zmontecarlo1, amontecarlo1))
+    print("MELHOR MÉDIA - {:.4g} <- {}".format(zmontecarlo, amontecarlo))
     print(fim - inicio)
 
     """
@@ -555,7 +561,7 @@ OC_CACHE = defaultdict(list)
 def _find_winner(free, pf, oc):
     "Returns None if no winner, True if X wins, False if O wins"
 
-    global tsp_obj, C_global, c_global, q_global, p_global, r_global, Q_global
+    global tsp_obj, melhor_solucao, C_global, c_global, q_global, p_global, r_global, Q_global
 
     if len(free) > 0:
         raise RuntimeError(f"find winner call called on nonterminal board {free, pf, oc}")
@@ -592,6 +598,30 @@ def _find_winner(free, pf, oc):
     else:
         return None
     """
+
+    if z < melhor_solucao:
+        melhor_solucao = z
+
+        for cliente in C_global:
+            new_oc = oc.copy()
+
+            if cliente in new_oc:
+                new_oc = new_oc.difference(frozenset([cliente]))
+            else:
+                new_oc = new_oc.union(frozenset([cliente]))
+
+            conjunto_com_ocasionais = []
+
+            for j in new_oc:
+                if random.random() <= p_global[j]:  # oc accepted
+                    conjunto_com_ocasionais.append(j)
+
+            avaliacao = cache_archetti(C_global, c_global, q_global, r_global, Q_global, conjunto_com_ocasionais)
+
+            if avaliacao < melhor_solucao:
+                melhor_solucao = avaliacao
+
+            OC_CACHE[new_oc].append(avaliacao)
 
     return tsp_obj - z
 

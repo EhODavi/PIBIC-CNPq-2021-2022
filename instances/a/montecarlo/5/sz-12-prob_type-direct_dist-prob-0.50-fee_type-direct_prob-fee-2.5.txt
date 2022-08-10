@@ -1,4 +1,4 @@
 Set parameter Username
 Academic license - for non-commercial use only - expires 2023-01-17
-MELHOR MÉDIA - 509.4 <- [2, 4, 5, 6, 7, 8, 9, 10]
-6.6806252002716064
+MELHOR MÉDIA - 514.3 <- [2, 4, 6, 7, 8, 9, 10, 11]
+5.942006349563599
