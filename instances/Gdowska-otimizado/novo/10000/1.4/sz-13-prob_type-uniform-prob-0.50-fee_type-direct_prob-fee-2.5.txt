@@ -1,5 +1,0 @@
-Set parameter Username
-Academic license - for non-commercial use only - expires 2023-01-17
-MIN - MONTE CARLO - OTIMIZADO
-468 <- [1, 3, 4, 5, 7, 9, 10, 12]
-27.835550546646118

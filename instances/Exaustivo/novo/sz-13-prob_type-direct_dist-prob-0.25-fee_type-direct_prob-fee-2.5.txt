@@ -1,7 +1,0 @@
-Set parameter Username
-Academic license - for non-commercial use only - expires 2023-01-17
-SOLUÇÃO SEM ENTREGADORES OCASIONAIS -> 430
-
-MIN - EXAUSTIVO
-409.1 <- [1, 3, 7, 9, 10, 12]
-43.30321717262268

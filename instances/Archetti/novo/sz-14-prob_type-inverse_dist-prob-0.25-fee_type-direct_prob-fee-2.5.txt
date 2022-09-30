@@ -1,6 +1,0 @@
-Set parameter Username
-Academic license - for non-commercial use only - expires 2023-01-17
-initial -> 530
-solution:
-{9, 10, 11, 13} -> 509.6
-2.9483466148376465
